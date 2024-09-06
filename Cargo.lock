@@ -672,6 +672,7 @@ dependencies = [
  "notify-rust",
  "tokio",
  "udev",
+ "zbus",
 ]
 
 [[package]]
