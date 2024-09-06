@@ -1,0 +1,8 @@
+[package]
+name = "notisystem"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.86"
+udev = "0.9.0"
