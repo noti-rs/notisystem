@@ -66,7 +66,7 @@ pub fn handle_power_supply_subsystem(event: &tokio_udev::Event) -> anyhow::Resul
                 };
 
                 Notification::new()
-                    .id(9999) // WARNING: REPLACE WITH REAL ID!!!
+                    .id(9999) // WARNING: REPLACE WITH ACTUAL ID!!!
                     .summary(&format!(
                         "Battery status: {}",
                         if is_charging {
