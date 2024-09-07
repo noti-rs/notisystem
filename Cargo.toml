@@ -5,8 +5,9 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.86"
+futures-util = "0.3.30"
 libc = "0.2.158"
 notify-rust = "4.11.1"
 tokio = { version = "1.40.0", features = ["full"] }
-udev = "0.9.0"
-zbus = "4.4.0"
+tokio-udev = "0.9.1"
+zbus = { version = "4.4.0" }

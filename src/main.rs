@@ -1,9 +1,15 @@
 mod dbus;
 mod udev;
 
-use std::io;
+use tokio;
 
 #[tokio::main]
-async fn main() -> io::Result<()> {
-    crate::udev::run().await
+async fn main() -> anyhow::Result<()> {
+    tokio::spawn(async {
+        dbus::network_manager::listen().await.expect("pizda");
+    });
+
+    udev::run().await?;
+
+    Ok(())
 }

@@ -1,4 +1,4 @@
-use zbus::{proxy, Connection};
+use zbus::proxy;
 
 #[proxy(
     default_service = "org.freedesktop.Notifications",
@@ -8,19 +8,9 @@ pub trait Notifications {
     async fn get_unique_id(&self) -> anyhow::Result<u32>;
 }
 
-pub struct NotificationsClient<'a> {
-    proxy: NotificationsProxy<'a>,
-}
+pub async fn get_unique_id() -> anyhow::Result<u32> {
+    let conn = zbus::Connection::session().await?;
+    let proxy = NotificationsProxy::new(&conn).await?;
 
-impl<'a> NotificationsClient<'a> {
-    pub async fn init() -> anyhow::Result<Self> {
-        let connection = Connection::session().await?;
-        let proxy = NotificationsProxy::new(&connection).await?;
-
-        Ok(Self { proxy })
-    }
-
-    pub async fn get_unique_id(&self) -> anyhow::Result<u32> {
-        Ok(self.proxy.get_unique_id().await?)
-    }
+    Ok(proxy.get_unique_id().await?)
 }
