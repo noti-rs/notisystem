@@ -1,20 +1,16 @@
 use futures_util::stream::StreamExt;
 use zbus::proxy;
 
-#[proxy(
-    interface = "org.freedesktop.NetworkManager",
-    default_service = "org.freedesktop.NetworkManager",
-    default_path = "/org/freedesktop/NetworkManager"
-)]
+#[proxy(interface = "org.freedesktop.NetworkManager", assume_defaults = true)]
 trait NetworkManager {
     #[zbus(signal)]
     fn state_changed(&self, state: u32) -> zbus::Result<()>;
 }
 
+// NOTE: not working at the moment
 pub async fn listen() -> anyhow::Result<()> {
     let conn = zbus::Connection::system().await?;
     let proxy = NetworkManagerProxy::new(&conn).await?;
-
     let mut stream = proxy.receive_state_changed().await?;
 
     println!("Listening NetworkManager for signals...");

@@ -1,30 +1,22 @@
 mod handler;
 
-use futures_util::{future::ready, stream::StreamExt};
+use futures_util::TryStreamExt;
 use std::convert::TryInto;
 use tokio_udev::{AsyncMonitorSocket, MonitorBuilder};
 
 pub async fn run() -> anyhow::Result<()> {
-    let builder = MonitorBuilder::new()
-        .expect("Couldn't create builder")
-        .match_subsystem_devtype("block", "disk")
-        .expect("Failed to add filter for disk devices")
-        .match_subsystem_devtype("power_supply", "power_supply")
-        .expect("Failed to add filter for power supply devices");
+    let handler = crate::udev::handler::UdevEventHandler::init().await?;
 
-    let monitor: AsyncMonitorSocket = builder
-        .listen()
-        .expect("Couldn't create MonitorSocket")
-        .try_into()
-        .expect("Couldn't create AsyncMonitorSocket");
-    monitor
-        .for_each(|event| {
-            if let Ok(event) = event {
-                crate::udev::handler::handle_udev_event(event).ok();
-            }
-            ready(())
-        })
-        .await;
+    let builder = MonitorBuilder::new()?
+        .match_subsystem_devtype("usb", "usb_device")?
+        .match_subsystem_devtype("block", "disk")?
+        .match_subsystem_devtype("power_supply", "power_supply")?;
+
+    let mut monitor: AsyncMonitorSocket = builder.listen()?.try_into()?;
+
+    while let Some(event) = monitor.try_next().await? {
+        handler.handle_event(event).await?;
+    }
 
     Ok(())
 }
