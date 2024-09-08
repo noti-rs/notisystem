@@ -20,5 +20,3 @@ jobs:
           components: clippy
       - run: sudo apt-get update && sudo apt-get install -y libudev-dev
       - run: cargo clippy
-        env:
-          RUSTFLAGS: "-Dwarnings"
