@@ -29,8 +29,8 @@ impl UdevEventHandler {
             .unwrap_or("unknown");
 
         match devtype {
-            "disk" => self.handle_disk_devtype(&event)?, // ┓
-            // ┣━ NOTE: these overlap
+            "disk" => self.handle_disk_devtype(&event)?, // ━━━━━┓
+            //                                                   ┣━ NOTE: these overlap
             "usb_device" => self.handle_usb_devtype(&event)?, // ┛
             "power_supply" => self.handle_power_supply_devtype(&event).await?,
             "unknown" => {
